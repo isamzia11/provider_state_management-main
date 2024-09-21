@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:provider_state_management/provider/count_provider.dart';
 import 'package:provider_state_management/provider/example_one_provider.dart';
 import 'package:provider_state_management/provider/favorite_provider.dart';
-import 'package:provider_state_management/screens/favourite/favorite_screen.dart';
+import 'package:provider_state_management/provider/theme_changer_provider.dart';
+import 'package:provider_state_management/screens/dark_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,25 +17,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => CountProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ExampleOneProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => FavoriteItemProvider(),
-        )
-      ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: FavouriteScreen(),
-      ),
-    );
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => CountProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ExampleOneProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => FavoriteItemProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ThemeChanger(),
+          )
+        ],
+        child: Builder(builder: (BuildContext context) {
+          final themeChanger = Provider.of<ThemeChanger>(context);
+          return MaterialApp(
+            title: 'Flutter Demo',
+            themeMode: themeChanger.themeMode,
+            theme: ThemeData(
+                brightness: Brightness.light,
+                appBarTheme: const AppBarTheme(color: Colors.blue)),
+            darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                appBarTheme: const AppBarTheme(color: Colors.deepOrange)),
+            home: const DarkThemeScreen(),
+          );
+        }));
   }
 }
